@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "The Art of Creating Digital Gifts",
-  description: "Extend your heartfelt sentiments to your cherished friends and family.",
+  title: "Giftbox",
+  description:
+    "Extend your heartfelt sentiments to your cherished friends and family.",
 };
 
 export default function RootLayout({

@@ -1,88 +1,104 @@
-import React, { useState } from 'react'
-import { LetterItem } from '@/app/page'
-import { PhotoItem } from '@/components/photo-item'
-import { LetterNote } from '@/components/letter-note'
-import { VoiceNote } from '@/components/voice-note'
-import { Button } from "@/components/ui/button"
-import { X, ArrowUp, ArrowDown } from 'lucide-react'
-import { SpotifyPlayer } from '@/components/spotify-player';
+import React, { useState } from "react";
+import { LetterItem } from "@/app/page";
+import { PhotoItem } from "@/components/photo-item";
+import { LetterNote } from "@/components/letter-note";
+import { VoiceNote } from "@/components/voice-note";
+import { VideoPlayer } from "@/components/video-player";
+import { Button } from "@/components/ui/button";
+import { X, ArrowUp, ArrowDown } from "lucide-react";
+import { SpotifyPlayer } from "@/components/spotify-player";
 
 interface DraggableItemProps {
-  item: LetterItem
-  onDelete: () => void
-  handleDragStart: (e: React.MouseEvent | React.TouchEvent, item: LetterItem) => void
-  isDragging: boolean
-  updateItemContent: (id: string, content: string, field?: string) => void
-  moveForward: () => void
-  moveBackward: () => void
-  children: React.ReactNode
+  item: LetterItem;
+  onDelete: () => void;
+  handleDragStart: (
+    e: React.MouseEvent | React.TouchEvent,
+    item: LetterItem,
+  ) => void;
+  isDragging: boolean;
+  updateItemContent: (id: string, content: string, field?: string) => void;
+  moveForward: () => void;
+  moveBackward: () => void;
+  children: React.ReactNode;
 }
 
-export const DraggableItem: React.FC<DraggableItemProps> = ({ 
-  item, 
-  onDelete, 
-  handleDragStart, 
+export const DraggableItem: React.FC<DraggableItemProps> = ({
+  item,
+  onDelete,
+  handleDragStart,
   isDragging,
   updateItemContent,
   moveForward,
-  moveBackward
+  moveBackward,
 }) => {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   const style: React.CSSProperties = {
-    position: 'absolute',
+    position: "absolute",
     left: item.position.x,
     top: item.position.y,
     transform: `rotate(${item.rotation}deg)`,
     opacity: isDragging ? 0.5 : 1,
-    cursor: 'move',
-    transition: isDragging ? 'none' : 'all 0.3s ease-out',
-    userSelect: 'none',
-    WebkitUserSelect: 'none',
-    MozUserSelect: 'none',
-    msUserSelect: 'none',
-    zIndex: item.zIndex || 1
-  }
+    cursor: "move",
+    transition: isDragging ? "none" : "all 0.3s ease-out",
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    MozUserSelect: "none",
+    msUserSelect: "none",
+    zIndex: item.zIndex || 1,
+  };
 
   const renderItem = () => {
     switch (item.type) {
-      case 'photo':
+      case "photo":
         return (
-          <PhotoItem 
-            url={item.content as string} 
-            caption={item.caption || ''}
-            onCaptionChange={(caption) => updateItemContent(item.id, caption, 'caption')}
+          <PhotoItem
+            url={item.content as string}
+            caption={item.caption || ""}
+            onCaptionChange={(caption) =>
+              updateItemContent(item.id, caption, "caption")
+            }
           />
-        )
-      case 'note':
-        return <LetterNote 
-          content={item.content as string} 
-          onChange={(content) => updateItemContent(item.id, content)} 
-          color={item.color || 'bg-white'}
-        />
-      case 'voice':
-        return <VoiceNote audioBlob={item.content as Blob} />
-      case 'spotify':
-        return <SpotifyPlayer spotifyUrl={item.content as string} />
-      case 'doodle':
+        );
+      case "note":
         return (
-          <object 
-            data={item.content as string} 
+          <LetterNote
+            content={item.content as string}
+            onChange={(content) => updateItemContent(item.id, content)}
+            color={item.color || "bg-white"}
+          />
+        );
+      case "voice":
+        return <VoiceNote audioBlob={item.content as Blob | string} />;
+      case "video":
+        return <VideoPlayer videoBlob={item.content as Blob | string} />;
+      case "spotify":
+        return <SpotifyPlayer spotifyUrl={item.content as string} />;
+      case "doodle":
+        return (
+          <object
+            data={item.content as string}
             type="image/svg+xml"
-            className="w-48 h-48 pointer-events-none" 
+            className="w-48 h-48 pointer-events-none"
           />
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
-    if ((e.target as HTMLElement).tagName === 'INPUT' || 
-      (e.target as HTMLElement).tagName === 'TEXTAREA' ||
-      (e.target as HTMLElement).closest('button')) {
+    // Don't drag if clicking on interactive elements
+    const target = e.target as HTMLElement;
+    if (
+      target.tagName === "INPUT" ||
+      target.tagName === "TEXTAREA" ||
+      target.tagName === "BUTTON" ||
+      target.closest("button")
+    ) {
       return;
     }
+
     e.preventDefault();
     handleDragStart(e, item);
   };
@@ -90,11 +106,11 @@ export const DraggableItem: React.FC<DraggableItemProps> = ({
   return (
     <div
       style={style}
-      onMouseDown={handleMouseDown}
-      onTouchStart={handleMouseDown}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative group touch-none"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
+      className="relative group touch-none cursor-move"
     >
       {renderItem()}
       {isHovered && (
@@ -135,6 +151,5 @@ export const DraggableItem: React.FC<DraggableItemProps> = ({
         </div>
       )}
     </div>
-  )
-}
-
+  );
+};
