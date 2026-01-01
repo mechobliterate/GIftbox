@@ -2,6 +2,7 @@ import React from "react";
 import { Polaroid } from "./polaroid";
 import { NotePaper } from "./note-paper";
 import { Microphone } from "./microphone";
+import { VideoCamera } from "./video-camera";
 import { CD } from "./cd";
 import { Pencil } from "./pencil";
 
@@ -9,6 +10,7 @@ interface ToolbarProps {
   onAddPhoto: () => void;
   onAddNote: (color: string) => void;
   onRecordVoice: () => void;
+  onRecordVideo: () => void;
   onAddMusic: (url: string) => void;
   onAddDoodle: () => void;
 }
@@ -17,6 +19,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onAddPhoto,
   onAddNote,
   onRecordVoice,
+  onRecordVideo,
   onAddMusic,
   onAddDoodle,
 }) => {
@@ -26,6 +29,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         <Polaroid onClick={onAddPhoto} />
         <NotePaper onAddNote={onAddNote} />
         <Microphone onClick={onRecordVoice} />
+        <VideoCamera onClick={onRecordVideo} />
         <CD onAddMusic={onAddMusic} />
         <Pencil onClick={onAddDoodle} />
       </div>

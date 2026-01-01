@@ -3,6 +3,7 @@ import { LetterItem } from "@/app/page";
 import { PhotoItem } from "@/components/photo-item";
 import { LetterNote } from "@/components/letter-note";
 import { VoiceNote } from "@/components/voice-note";
+import { VideoPlayer } from "@/components/video-player";
 import { Button } from "@/components/ui/button";
 import { X, ArrowUp, ArrowDown } from "lucide-react";
 import { SpotifyPlayer } from "@/components/spotify-player";
@@ -69,6 +70,8 @@ export const DraggableItem: React.FC<DraggableItemProps> = ({
         );
       case "voice":
         return <VoiceNote audioBlob={item.content as Blob | string} />;
+      case "video":
+        return <VideoPlayer videoBlob={item.content as Blob | string} />;
       case "spotify":
         return <SpotifyPlayer spotifyUrl={item.content as string} />;
       case "doodle":

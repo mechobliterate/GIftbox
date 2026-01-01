@@ -7,6 +7,7 @@ import { Toolbar } from "@/components/toolbar";
 import { LetterCanvas } from "@/components/letter-canvas";
 import { PhotoUploader } from "@/components/photo-uploader";
 import { VoiceRecorder } from "@/components/voice-recorder";
+import { VideoRecorder } from "@/components/video-recorder";
 import { DoodleDrawer } from "@/components/doodle-drawer";
 import { DottedBackground } from "@/components/dotted-background";
 import {
@@ -21,7 +22,7 @@ import { Button } from "@/components/ui/button";
 
 export interface LetterItem {
   id: string;
-  type: "photo" | "note" | "voice" | "spotify" | "doodle";
+  type: "photo" | "note" | "voice" | "video" | "spotify" | "doodle";
   content: string | Blob;
   position: { x: number; y: number };
   rotation: number;
@@ -37,6 +38,7 @@ export default function DigitalLetterComposer() {
   const [items, setItems] = useState<LetterItem[]>([]);
   const [isPhotoUploaderOpen, setIsPhotoUploaderOpen] = useState(false);
   const [isVoiceRecorderOpen, setIsVoiceRecorderOpen] = useState(false);
+  const [isVideoRecorderOpen, setIsVideoRecorderOpen] = useState(false);
   const [isDoodleDrawerOpen, setIsDoodleDrawerOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [currentItem, setCurrentItem] = useState<LetterItem | null>(null);
@@ -258,6 +260,16 @@ export default function DigitalLetterComposer() {
     });
   };
 
+  const addVideoMessage = (videoBlob: Blob) => {
+    addItem({
+      id: Date.now().toString(),
+      type: "video",
+      content: videoBlob,
+      position: getRandomPosition(),
+      rotation: getRandomRotation(),
+    });
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="h-screen overflow-hidden bg-stone-200 flex flex-col relative">
@@ -286,6 +298,9 @@ export default function DigitalLetterComposer() {
                   </li>
                   <li>
                     🎤 <strong>Record Voice</strong> - Send a voice message
+                  </li>
+                  <li>
+                    🎥 <strong>Record Video</strong> - Send a video message
                   </li>
                   <li>
                     🎵 <strong>Add Music</strong> - Share Spotify or Apple Music
@@ -353,6 +368,7 @@ export default function DigitalLetterComposer() {
             onAddPhoto={() => setIsPhotoUploaderOpen(true)}
             onAddNote={addNote}
             onRecordVoice={() => setIsVoiceRecorderOpen(true)}
+            onRecordVideo={() => setIsVideoRecorderOpen(true)}
             onAddMusic={addMusicPlayer}
             onAddDoodle={() => setIsDoodleDrawerOpen(true)}
           />
@@ -385,6 +401,15 @@ export default function DigitalLetterComposer() {
                 rotation: getRandomRotation(),
               });
               setIsVoiceRecorderOpen(false);
+            }}
+          />
+        )}
+        {isVideoRecorderOpen && (
+          <VideoRecorder
+            onClose={() => setIsVideoRecorderOpen(false)}
+            onVideoAdd={(videoBlob) => {
+              addVideoMessage(videoBlob);
+              setIsVideoRecorderOpen(false);
             }}
           />
         )}
