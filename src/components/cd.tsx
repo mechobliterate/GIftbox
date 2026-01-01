@@ -1,26 +1,27 @@
-import React from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
 
 interface CDProps {
-  onAddSpotify: (url: string) => void
+  onAddMusic: (url: string) => void;
 }
 
-export const CD: React.FC<CDProps> = ({ onAddSpotify }) => {
-  const [spotifyUrl, setSpotifyUrl] = React.useState('')
+export const CD: React.FC<CDProps> = ({ onAddMusic }) => {
+  const [musicUrl, setMusicUrl] = React.useState("");
 
-  const handleSpotifySubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (spotifyUrl.trim()) {
-      onAddSpotify(spotifyUrl.trim())
-      setSpotifyUrl('')
+  const handleMusicSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (musicUrl.trim()) {
+      onAddMusic(musicUrl.trim());
+      setMusicUrl("");
     }
-  }
+  };
 
   return (
     <div className="group z-10 transform translate-y-4 transition-all duration-300 ease-in-out hover:-translate-y-8 ">
@@ -39,16 +40,27 @@ export const CD: React.FC<CDProps> = ({ onAddSpotify }) => {
           </div>
         </PopoverTrigger>
         <PopoverContent className="w-80 rounded-xl">
-          <form onSubmit={handleSpotifySubmit} className="flex gap-2">
-            <Input
-              type="url"
-              placeholder="Spotify embed URL..."
-              value={spotifyUrl}
-              onChange={(e) => setSpotifyUrl(e.target.value)}
-              className="bg-stone-100 flex-1"
-            />
-            <Button type="submit">Add</Button>
-          </form>
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="music-url" className="text-sm font-medium">
+                Add Music
+              </Label>
+              <p className="text-xs text-stone-500 mt-1">
+                Paste a Spotify or Apple Music link
+              </p>
+            </div>
+            <form onSubmit={handleMusicSubmit} className="flex gap-2">
+              <Input
+                id="music-url"
+                type="url"
+                placeholder="https://open.spotify.com/... or https://music.apple.com/..."
+                value={musicUrl}
+                onChange={(e) => setMusicUrl(e.target.value)}
+                className="bg-stone-100 flex-1"
+              />
+              <Button type="submit">Add</Button>
+            </form>
+          </div>
         </PopoverContent>
       </Popover>
       <style jsx>{`
@@ -65,6 +77,5 @@ export const CD: React.FC<CDProps> = ({ onAddSpotify }) => {
         }
       `}</style>
     </div>
-  )
-}
-
+  );
+};
